@@ -83,16 +83,25 @@ public interface CourseTeacherMapper {
 	boolean insertNewClass(@Param("cid")int cid,@Param("uid")int uid,@Param("classsort")int classsort);
 	
 	//查询老师的开班信息
-	@Select("SELECT course.cid,course.cname,cor_ther.classsort,\r\n" + 
-			"(SELECT COUNT(*) FROM ct_stu where ct_stu.cid=cor_ther.cid AND ct_stu.classsort = cor_ther.classsort) as currentCount,\r\n" + 
-			"CAST(GROUP_CONCAT('[',startweek,'-',endweek,']',ctlocal,'_',cttime) AS char)AS ctlocal\r\n" + 
-			"FROM cor_ther INNER JOIN course ON cor_ther.cid = course.cid INNER JOIN weektime ON weektime.wid=cor_ther.wid \r\n" + 
-			"where cor_ther.uid= #{uid}\r\n" + 
-			"GROUP BY cname,classsort")
-	List<CourseTeacher> getMyClasses(int uid);
+//	@Select("SELECT course.cid,course.cname,cor_ther.classsort,\r\n" +
+//			"(SELECT COUNT(*) FROM ct_stu where ct_stu.cid=cor_ther.cid AND ct_stu.classsort = cor_ther.classsort) as currentCount,\r\n" +
+//			"CAST(GROUP_CONCAT('[',startweek,'-',endweek,']',ctlocal,'_',cttime) AS char)AS ctlocal\r\n" +
+//			"FROM cor_ther INNER JOIN course ON cor_ther.cid = course.cid INNER JOIN weektime ON weektime.wid=cor_ther.wid \r\n" +
+//			"where cor_ther.uid= #{uid}\r\n" +
+//			"GROUP BY cname,classsort")
+//	List<CourseTeacher> getMyClasses(int uid);
+	@Select("SELECT ct.*, c.cname, u.uname, " +
+			"GROUP_CONCAT(DISTINCT CONCAT('[', wt.startweek, '-', wt.endweek, '] ', ct.ctlocal, ' ', ct.cttime) SEPARATOR ', ') AS schedule " +
+			"FROM cor_ther ct " +
+			"JOIN course c ON ct.cid = c.cid " +
+			"JOIN userther u ON ct.uid = u.uid " +
+			"LEFT JOIN weektime wt ON ct.wid = wt.wid " +
+			"WHERE ct.uid = #{uid} AND ct.ctstatus = '已排课' " +
+			"GROUP BY ct.ctid")
+	List<CourseTeacher> getMyClasses(@Param("uid")int uid);
 	
 	//查询老师未通过的开班信息
-	@Select("SELECT * FROM cor_ther INNER JOIN course ON cor_ther.cid = course.cid  where uid= #{uid} and ctstatus ='未通过'")
+	@Select("SELECT * FROM cor_ther INNER JOIN course ON cor_ther.cid = course.cid  where uid= #{uid} and ctstatus ='未排课'")
 	List<CourseTeacher> getNoPassClasses(@Param("uid")int uid);
 	
 	//查询老师已关闭的班级
@@ -107,23 +116,35 @@ public interface CourseTeacherMapper {
 	List<CourseTeacher> getAllCourse();
 	
 	//查询未选修过的课程
-	@Select("SELECT course.cid,cname,uname,sex,score,GROUP_CONCAT(ctlocal,'_',cttime)as ctlocal,clessionCount,ctype,cdesc \r\n" + 
-			"FROM cor_ther INNER JOIN course ON cor_ther.cid = course.cid INNER JOIN userther ON userther.uid = cor_ther.uid \r\n" + 
-			"WHERE course.cstatus='通过' AND cor_ther.ctstatus='已排课' AND cor_ther.ctlocal!=''\r\n" + 
-			"AND course.cid NOT IN (SELECT cid FROM mark WHERE uid = #{uid})\r\n" + 
-			"GROUP BY cid")
+//	@Select("SELECT course.cid,cname,uname,sex,score,GROUP_CONCAT(ctlocal,'_',cttime)as ctlocal,clessionCount,ctype,cdesc \r\n" +
+//			"FROM cor_ther INNER JOIN course ON cor_ther.cid = course.cid INNER JOIN userther ON userther.uid = cor_ther.uid \r\n" +
+//			"WHERE course.cstatus='通过' AND cor_ther.ctstatus='已排课' AND cor_ther.ctlocal!=''\r\n" +
+//			"AND course.cid NOT IN (SELECT cid FROM mark WHERE uid = #{uid})\r\n" +
+//			"GROUP BY cid")
+//	List<CourseTeacher> getNeverLearnCourse(int uid);
+	@Select("SELECT course.cid, cname, uname, sex, score, " +
+			"GROUP_CONCAT(ctlocal,'_',cttime) AS ctlocal, " +
+			"clessionCount, ctype, cdesc " +
+			"FROM cor_ther " +
+			"INNER JOIN course ON cor_ther.cid = course.cid " +
+			"INNER JOIN userther ON userther.uid = cor_ther.uid " +
+			"WHERE course.cstatus='通过' " +
+			"AND cor_ther.ctstatus='已排课' " +
+			"AND cor_ther.ctlocal!='' " +
+			"AND course.cid NOT IN (SELECT cid FROM mark WHERE uid = #{uid}) " +
+			"GROUP BY course.cid, cname, uname, sex, score, clessionCount, ctype, cdesc")
 	List<CourseTeacher> getNeverLearnCourse(int uid);
 		
 	//查询该课程的所有班级和上课周次地点
-	@Select("SELECT ctid,cid,classsort,userther.uname,CAST(GROUP_CONCAT('[',startWeek,'-',endWeek,']',ctlocal,'_',cttime) AS char) as ctlocal,\r\n" + 
+	@Select("SELECT ctid,cid,classsort,userther.uname,CAST(GROUP_CONCAT('[',startWeek,'-',endWeek,']',ctlocal,'_',cttime) AS char) as ctlocal,\r\n" +
 			"(SELECT COUNT(*) FROM ct_stu WHERE ct_stu.cid = #{cid} AND ct_stu.classsort = cor_ther.classsort) as currentCount,"+
 			"(SELECT cMaxCount FROM course WHERE course.cid = #{cid}) as cmaxCount "+
-			"FROM cor_ther INNER JOIN weektime ON weektime.wid = cor_ther.wid\r\n" + 
+			"FROM cor_ther INNER JOIN weektime ON weektime.wid = cor_ther.wid\r\n" +
 			"INNER JOIN userther ON userther.uid=cor_ther.uid\r\n" +
-			"WHERE cid = #{cid} AND ctstatus='已排课' AND cor_ther.ctlocal !=''\r\n" + 
+			"WHERE cid = #{cid} AND ctstatus='已排课' AND cor_ther.ctlocal !=''\r\n" +
 			"GROUP BY classsort")
 	List<CourseTeacher>  getAllClassInfoByCourseId(int cid);
-	
+
 	//查询过往的学生选修的cid的成绩
 	@Select("SELECT scores FROM mark WHERE uid = #{uid} AND cid = #{cid}")
 	BigDecimal getScoresByCidUid(@Param("cid")int cid,@Param("uid")int uid);
@@ -253,6 +274,16 @@ public interface CourseTeacherMapper {
 	//班级关闭 第5步 清除 cor_ther 内的排课记录
 	@Delete("DELETE FROM cor_ther WHERE cid=#{cid} AND classsort =#{classsort} AND ctlocal !='' ")
 	boolean deleteCor_therCidClassInfo(@Param("cid")int cid,@Param("classsort")int classsort);
+
+	@Select("SELECT ct.*, c.cname, u.uname, " +
+			"GROUP_CONCAT(DISTINCT CONCAT('[', wt.startweek, '-', wt.endweek, '] ', ct.ctlocal, ' ', ct.cttime) SEPARATOR ', ') AS schedule " +
+			"FROM cor_ther ct " +
+			"JOIN course c ON ct.cid = c.cid " +
+			"JOIN userther u ON ct.uid = u.uid " +
+			"LEFT JOIN weektime wt ON ct.wid = wt.wid " +
+			"WHERE ct.uid = #{uid} AND ct.ctstatus = '已排课' " +
+			"GROUP BY ct.ctid")
+	List<CourseTeacher> getApprovedClasses(@Param("uid") int uid);
 
 }
 

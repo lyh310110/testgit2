@@ -318,4 +318,8 @@ public class CourseTeacherService {
 		}		
 		return true;
 	}
+
+	public List<CourseTeacher> getApprovedClasses(int uid) {
+		return courseTeacherMapper.getApprovedClasses(uid);
+	}
 }

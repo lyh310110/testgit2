@@ -7,10 +7,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import com.pzhu.bean.ClassTable;
 import com.pzhu.bean.Course;
@@ -218,13 +215,18 @@ public class TechController {
 		}		
 	}
 	
-	@RequestMapping(value="myClasses")
-	@ResponseBody
-	public List<CourseTeacher> getMyClasses(HttpSession session) {
-		int uid = (int) session.getAttribute("id");
-		return courseTeacherService.getMyClasses(uid);
-	}
-	
+//	@RequestMapping(value="myClasses")
+//	@ResponseBody
+//	public List<CourseTeacher> getMyClasses(HttpSession session) {
+//		int uid = (int) session.getAttribute("id");
+//		return courseTeacherService.getMyClasses(uid);
+//	}
+@RequestMapping(value="/myClasses", method = RequestMethod.GET)  // 确保路径正确
+@ResponseBody  // 确保返回 JSON 而不是视图
+public List<CourseTeacher> getMyClasses(HttpSession session) {
+	int uid = (int) session.getAttribute("id");
+	return courseTeacherService.getMyClasses(uid);
+}
 	//获得所选班级的学生
 	@RequestMapping(value="myClassesperson/{cid}/{classsort}")
 	@ResponseBody
@@ -258,4 +260,11 @@ public class TechController {
 	}
 	
 	//查看已经关闭的开班
+	//查看通过的开班
+	@RequestMapping(value="getApprovedClasses")
+	@ResponseBody
+	public List<CourseTeacher> getApprovedClasses(HttpSession session) {
+		int uid = (int) session.getAttribute("id"); // 获取当前教师ID
+		return courseTeacherService.getApprovedClasses(uid);
+	}
 }
