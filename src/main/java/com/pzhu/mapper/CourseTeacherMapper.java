@@ -85,13 +85,7 @@ public interface CourseTeacherMapper {
 boolean insertNewClass(@Param("cid")int cid,@Param("uid")int uid,@Param("classsort")int classsort);
 
 	//查询老师的开班信息
-//	@Select("SELECT course.cid,course.cname,cor_ther.classsort,\r\n" +
-//			"(SELECT COUNT(*) FROM ct_stu where ct_stu.cid=cor_ther.cid AND ct_stu.classsort = cor_ther.classsort) as currentCount,\r\n" +
-//			"CAST(GROUP_CONCAT('[',startweek,'-',endweek,']',ctlocal,'_',cttime) AS char)AS ctlocal\r\n" +
-//			"FROM cor_ther INNER JOIN course ON cor_ther.cid = course.cid INNER JOIN weektime ON weektime.wid=cor_ther.wid \r\n" +
-//			"where cor_ther.uid= #{uid}\r\n" +
-//			"GROUP BY cname,classsort")
-//	List<CourseTeacher> getMyClasses(int uid);
+
 	@Select("SELECT ct.*, c.cname, u.uname, " +
 			"GROUP_CONCAT(DISTINCT CONCAT('[', wt.startweek, '-', wt.endweek, '] ', ct.ctlocal, ' ', ct.cttime) SEPARATOR ', ') AS schedule " +
 			"FROM cor_ther ct " +
