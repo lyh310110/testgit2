@@ -215,18 +215,13 @@ public class TechController {
 		}		
 	}
 	
-//	@RequestMapping(value="myClasses")
-//	@ResponseBody
-//	public List<CourseTeacher> getMyClasses(HttpSession session) {
-//		int uid = (int) session.getAttribute("id");
-//		return courseTeacherService.getMyClasses(uid);
-//	}
-@RequestMapping(value="/myClasses", method = RequestMethod.GET)  // 确保路径正确
-@ResponseBody  // 确保返回 JSON 而不是视图
-public List<CourseTeacher> getMyClasses(HttpSession session) {
-	int uid = (int) session.getAttribute("id");
-	return courseTeacherService.getMyClasses(uid);
-}
+	@RequestMapping(value="myClasses")
+	@ResponseBody
+	public List<CourseTeacher> getMyClasses(HttpSession session) {
+		int uid = (int) session.getAttribute("id");
+		return courseTeacherService.getMyClasses(uid);
+	}
+
 	//获得所选班级的学生
 	@RequestMapping(value="myClassesperson/{cid}/{classsort}")
 	@ResponseBody
@@ -260,11 +255,5 @@ public List<CourseTeacher> getMyClasses(HttpSession session) {
 	}
 	
 	//查看已经关闭的开班
-	//查看通过的开班
-	@RequestMapping(value="getApprovedClasses")
-	@ResponseBody
-	public List<CourseTeacher> getApprovedClasses(HttpSession session) {
-		int uid = (int) session.getAttribute("id"); // 获取当前教师ID
-		return courseTeacherService.getApprovedClasses(uid);
-	}
+
 }

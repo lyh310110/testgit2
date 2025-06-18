@@ -22,10 +22,10 @@
             <button id="btn_reflash" type="button" class="btn btn-success" title="刷新" onclick="tableRefesh()">
                 <span class="glyphicon glyphicon-refresh" ></span>
             </button>
-            <button id="btn_upload" type="button" class="btn btn-success" title="增加" onclick="addStu()">
+            <button id="btn_add" type="button" class="btn btn-success" title="增加" onclick="addStu()">
                 <span class="glyphicon glyphicon-plus" ></span>
             </button>
-            <button id="btn_upload" type="button" class="btn btn-success" title="删除" onclick="deleteStu()">
+            <button id="btn_delete" type="button" class="btn btn-success" title="删除" onclick="deleteStu()">
                 <span class="glyphicon glyphicon-minus" ></span>
             </button>
             <button id="btn_upload" type="button" class="btn btn-success" title="提交" onclick="updateStu()">
