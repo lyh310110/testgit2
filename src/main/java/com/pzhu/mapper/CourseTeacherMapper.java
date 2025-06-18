@@ -59,7 +59,7 @@ public interface CourseTeacherMapper {
 	List<CourseTeacher> getClassHasUesd(String ctlocal);
 
 	//插入之前先删除教室节次信息为空的行DELETE FROM cor_ther WHERE ctlocal='' AND cttime='' and cid = #{cid} and uid =#{uid} and classsort=#{classsort}
-	//boolean deleteCor_TherCT(@Param("cid")int cid,@Param("uid")int uid,@Param("classsort")int classsort);
+	boolean deleteCor_TherCT(@Param("cid")int cid,@Param("uid")int uid,@Param("classsort")int classsort);
 
 	//插入cor_ther排课教室节次信息
 	@Insert("INSERT INTO cor_ther(ctlocal,cttime,classsort,cid,uid,wid) VALUES(#{ctlocal},#{cttime},#{classsort},#{cid},#{uid},#{wid})")
@@ -78,9 +78,11 @@ public interface CourseTeacherMapper {
 	@Select("SELECT MAX(classsort) FROM cor_ther WHERE cid = #{cid}")
 	int getMaxClassSort(int cid);
 
-	//插入cor_ther的新增开课班级
-	@Insert("INSERT INTO cor_ther(ctlocal,cttime,cid,uid,classsort) VALUES('','',#{cid},#{uid},#{classsort})")
-	boolean insertNewClass(@Param("cid")int cid,@Param("uid")int uid,@Param("classsort")int classsort);
+//	//插入cor_ther的新增开课班级
+//	@Insert("INSERT INTO cor_ther(ctlocal,cttime,cid,uid,classsort) VALUES('','',#{cid},#{uid},#{classsort})")
+//	boolean insertNewClass(@Param("cid")int cid,@Param("uid")int uid,@Param("classsort")int classsort);
+@Insert("INSERT INTO cor_ther(ctlocal,cttime,cid,uid,classsort,ctstatus) VALUES('','',#{cid},#{uid},#{classsort},'未排课')")
+boolean insertNewClass(@Param("cid")int cid,@Param("uid")int uid,@Param("classsort")int classsort);
 
 	//查询老师的开班信息
 //	@Select("SELECT course.cid,course.cname,cor_ther.classsort,\r\n" +
@@ -278,23 +280,41 @@ List<CourseTeacher> getMyChooseCourse(int uid);
 			"GROUP BY cor_ther.ctid")
 	List<CourseTeacher> getTeacherClassTable(int uid);
 
-	//查看所有班级
-	@Select("SELECT course.cid,cor_ther.ctid,course.climitCount,course.cname,cor_ther.classsort,\r\n" +
-			"(SELECT COUNT(*) FROM ct_stu where ct_stu.cid=cor_ther.cid AND ct_stu.classsort = cor_ther.classsort) as currentCount,\r\n" +
-			"CAST(GROUP_CONCAT('[',startweek,'-',endweek,']',ctlocal,'_',cttime) AS char)AS ctlocal\r\n" +
-			"FROM cor_ther INNER JOIN course ON cor_ther.cid = course.cid INNER JOIN weektime ON weektime.wid=cor_ther.wid \r\n" +
-			"where(SELECT COUNT(*) FROM ct_stu where ct_stu.cid=cor_ther.cid AND ct_stu.classsort = cor_ther.classsort)>=0\r\n" +
-			"GROUP BY cname,classsort")
-	List<CourseTeacher> getAllTeacherClasses();
+//	//查看所有班级
+//	@Select("SELECT course.cid,cor_ther.ctid,course.climitCount,course.cname,cor_ther.classsort,\r\n" +
+//			"(SELECT COUNT(*) FROM ct_stu where ct_stu.cid=cor_ther.cid AND ct_stu.classsort = cor_ther.classsort) as currentCount,\r\n" +
+//			"CAST(GROUP_CONCAT('[',startweek,'-',endweek,']',ctlocal,'_',cttime) AS char)AS ctlocal\r\n" +
+//			"FROM cor_ther INNER JOIN course ON cor_ther.cid = course.cid INNER JOIN weektime ON weektime.wid=cor_ther.wid \r\n" +
+//			"where(SELECT COUNT(*) FROM ct_stu where ct_stu.cid=cor_ther.cid AND ct_stu.classsort = cor_ther.classsort)>=0\r\n" +
+//			"GROUP BY cname,classsort")
+//	List<CourseTeacher> getAllTeacherClasses();
+@Select("SELECT course.cid, cor_ther.ctid, course.climitCount, course.cname, cor_ther.classsort, " +
+		"(SELECT COUNT(*) FROM ct_stu WHERE ct_stu.cid=cor_ther.cid AND ct_stu.classsort = cor_ther.classsort) as currentCount, " +
+		"CAST(GROUP_CONCAT('[',startweek,'-',endweek,']',ctlocal,'_',cttime) AS char) AS ctlocal " +
+		"FROM cor_ther " +
+		"INNER JOIN course ON cor_ther.cid = course.cid " +
+		"INNER JOIN weektime ON weektime.wid=cor_ther.wid " +
+		"WHERE (SELECT COUNT(*) FROM ct_stu WHERE ct_stu.cid=cor_ther.cid AND ct_stu.classsort = cor_ther.classsort) >= 0 " +
+		"GROUP BY course.cid, cor_ther.ctid, course.climitCount, course.cname, cor_ther.classsort")
+List<CourseTeacher> getAllTeacherClasses();
 
-	//查看人数不足班级
-	@Select("SELECT course.cid,cor_ther.ctid,course.climitCount,course.cname,cor_ther.classsort,\r\n" +
-			"(SELECT COUNT(*) FROM ct_stu where ct_stu.cid=cor_ther.cid AND ct_stu.classsort = cor_ther.classsort) as currentCount,\r\n" +
-			"CAST(GROUP_CONCAT('[',startweek,'-',endweek,']',ctlocal,'_',cttime) AS char)AS ctlocal\r\n" +
-			"FROM cor_ther INNER JOIN course ON cor_ther.cid = course.cid INNER JOIN weektime ON weektime.wid=cor_ther.wid \r\n" +
-			"where(SELECT COUNT(*) FROM ct_stu where ct_stu.cid=cor_ther.cid AND ct_stu.classsort = cor_ther.classsort)<=course.climitCount\r\n" +
-			"GROUP BY cname,classsort")
-	List<CourseTeacher> getlimitTeacherClasses();
+//	//查看人数不足班级
+//	@Select("SELECT course.cid,cor_ther.ctid,course.climitCount,course.cname,cor_ther.classsort,\r\n" +
+//			"(SELECT COUNT(*) FROM ct_stu where ct_stu.cid=cor_ther.cid AND ct_stu.classsort = cor_ther.classsort) as currentCount,\r\n" +
+//			"CAST(GROUP_CONCAT('[',startweek,'-',endweek,']',ctlocal,'_',cttime) AS char)AS ctlocal\r\n" +
+//			"FROM cor_ther INNER JOIN course ON cor_ther.cid = course.cid INNER JOIN weektime ON weektime.wid=cor_ther.wid \r\n" +
+//			"where(SELECT COUNT(*) FROM ct_stu where ct_stu.cid=cor_ther.cid AND ct_stu.classsort = cor_ther.classsort)<=course.climitCount\r\n" +
+//			"GROUP BY cname,classsort")
+//	List<CourseTeacher> getlimitTeacherClasses();
+@Select("SELECT course.cid, cor_ther.ctid, course.climitCount, course.cname, cor_ther.classsort, " +
+		"(SELECT COUNT(*) FROM ct_stu WHERE ct_stu.cid = cor_ther.cid AND ct_stu.classsort = cor_ther.classsort) AS currentCount, " +
+		"CAST(GROUP_CONCAT('[', startweek, '-', endweek, ']', ctlocal, '_', cttime) AS char) AS ctlocal " +
+		"FROM cor_ther " +
+		"INNER JOIN course ON cor_ther.cid = course.cid " +
+		"INNER JOIN weektime ON weektime.wid = cor_ther.wid " +
+		"WHERE (SELECT COUNT(*) FROM ct_stu WHERE ct_stu.cid = cor_ther.cid AND ct_stu.classsort = cor_ther.classsort) <= course.climitCount " +
+		"GROUP BY course.cid, cor_ther.ctid, course.climitCount, course.cname, cor_ther.classsort")
+List<CourseTeacher> getlimitTeacherClasses();
 
 	//班级关闭 第1步 清除 ct_stu 表内学生选课记录
 	@Delete("DELETE FROM ct_stu WHERE cid=#{cid} AND classsort =#{classsort}")
