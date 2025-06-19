@@ -346,16 +346,5 @@ public class UserController{
 		}
 	}
 
-	// 显式处理 /login（http://localhost:8080/login）
-	@GetMapping("/login")
-	public String login() {
-		return "login";  // 同样返回 login.jsp
-	}
-
-	// 退出功能
-	@GetMapping("/logout")
-	public String logout(HttpSession session) {
-		session.invalidate();
-		return "redirect:/login";  // 重定向到 /login
-	}
+	
 }
