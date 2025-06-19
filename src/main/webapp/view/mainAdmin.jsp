@@ -14,18 +14,21 @@
 </head>
 <body>
 	<div id="nav">
-	    <img id="img1" src="../img/logo2.png">
-	    <h2>教务处后台管理</h2>
-	    <img id="yonghu" alt="用户" src="../img/userblack.png">
-	    <span id="name1">&nbsp;${sessionScope.name}</span>
-		<a href="/logout" id="logoutBtn" style="float: right; margin-right: 20px; color: #333; text-decoration: none;">退出</a>
-	    <div id="setime">
-	    	<img id="shalou" alt="时间" src="../img/shalou.png">
-	    	<span id="starttime">2019-1-1</span>
-	    	<span >至</span>
-	    	<span id="endtime">2019-1-12</span>
-	    	<button type="button" onclick="bttime()" id="bttime" class="btn btn-default btn-sm">更改</button>
-	    </div>
+		<img id="img1" src="../img/logo2.png">
+		<h2>教师课程管理</h2>
+		<div style="float: right; display: flex; align-items: center; margin-right: 20px;">
+			<img id="yonghu" alt="用户" src="../img/userblack.png">
+			<span id="name1">&nbsp;${sessionScope.name}</span>
+			<img id="bumen" alt="用户" src="../img/bumen.png">
+			<span id="part1">&nbsp;${sessionScope.partment}</span>
+			<a href="/logout" id="logoutBtn" style="margin-left: 15px; color: #333; text-decoration: none;">退出</a>
+		</div>
+		<div id="setime">
+			<img id="shalou" alt="时间" src="../img/shalou.png">
+			<span id="starttime">2019-1-1</span>
+			<span>至</span>
+			<span id="endtime">2019-1-12</span>
+		</div>
 	</div>
 	<div id="left">
 	    <table id="t1">
