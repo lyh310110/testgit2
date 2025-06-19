@@ -180,10 +180,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import com.pzhu.bean.User;
 import com.pzhu.service.UserService;
@@ -347,5 +344,18 @@ public class UserController{
 		}else {
 			return "验证码不正确";
 		}
+	}
+
+	// 显式处理 /login（http://localhost:8080/login）
+	@GetMapping("/login")
+	public String login() {
+		return "login";  // 同样返回 login.jsp
+	}
+
+	// 退出功能
+	@GetMapping("/logout")
+	public String logout(HttpSession session) {
+		session.invalidate();
+		return "redirect:/login";  // 重定向到 /login
 	}
 }

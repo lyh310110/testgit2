@@ -11,23 +11,41 @@
     <script src="../js/bootstrap.min.js"></script>
 </head>
 <body>
-	<div id="nav">
-	    <img id="img1" src="../img/logo2.png">
-	    <h2>教师课程管理</h2>
-	    <img id="yonghu" alt="用户" src="../img/userblack.png">
-	    <span id="name1">&nbsp;&nbsp;${sessionScope.name}</span>
-	    <img id="bumen" alt="用户" src="../img/bumen.png">
-	    <span id="part1">&nbsp;&nbsp;${sessionScope.partment}</span>
-	    <div id="setime">
-	    	<img id="shalou" alt="时间" src="../img/shalou.png">
-	    	<span id="starttime">2019-1-1</span>
-	    	<span >至</span>
-	    	<span id="endtime">2019-1-12</span>
-	    </div>
+<%--	<div id="nav">--%>
+<%--	    <img id="img1" src="../img/logo2.png">--%>
+<%--	    <h2>教师课程管理</h2>--%>
+<%--	    <img id="yonghu" alt="用户" src="../img/userblack.png">--%>
+<%--	    <span id="name1">&nbsp;&nbsp;${sessionScope.name}</span>--%>
+<%--		<a href="/logout" id="logoutBtn" style="float: right; margin-right: 20px; color: #333; text-decoration: none;">退出</a>--%>
+<%--	    <img id="bumen" alt="用户" src="../img/bumen.png">--%>
+<%--	    <span id="part1">&nbsp;&nbsp;${sessionScope.partment}</span>--%>
+<%--	    <div id="setime">--%>
+<%--	    	<img id="shalou" alt="时间" src="../img/shalou.png">--%>
+<%--	    	<span id="starttime">2019-1-1</span>--%>
+<%--	    	<span >至</span>--%>
+<%--	    	<span id="endtime">2019-1-12</span>--%>
+<%--	    </div>--%>
+<%--	</div>--%>
+<div id="nav">
+	<img id="img1" src="../img/logo2.png">
+	<h2>教师课程管理</h2>
+	<div style="float: right; display: flex; align-items: center; margin-right: 20px;">
+		<img id="yonghu" alt="用户" src="../img/userblack.png">
+		<span id="name1">&nbsp;${sessionScope.name}</span>
+		<img id="bumen" alt="用户" src="../img/bumen.png">
+		<span id="part1">&nbsp;${sessionScope.partment}</span>
+		<a href="/logout" id="logoutBtn" style="margin-left: 15px; color: #333; text-decoration: none;">退出</a>
 	</div>
+	<div id="setime">
+		<img id="shalou" alt="时间" src="../img/shalou.png">
+		<span id="starttime">2019-1-1</span>
+		<span>至</span>
+		<span id="endtime">2019-1-12</span>
+	</div>
+</div>
 	<div id="left">
 		<div class="panel-group" id="accordion">
-		
+
 		    <div class="panel panel-default">
 		        <div class="panel-heading tit" >
 		            <h4 class="panel-title">
@@ -49,7 +67,7 @@
 		            </div>
 		        </div>
 		    </div>
-		    
+
 		    <div class="panel panel-default">
 		        <div class="panel-heading tit" >
 		            <h4 class="panel-title">
@@ -70,8 +88,8 @@
 		            </div>
 		        </div>
 		    </div>
-		    
-		    
+
+
 			 <div class="panel panel-default">
 		        <div class="panel-heading tit" >
 		            <h4 class="panel-title">
@@ -80,12 +98,12 @@
 		                </div>
 		            </h4>
 		        </div>
-		        
+
 		    </div>
 		</div>
 	</div>
 	<iframe id="right" src="http://localhost:8080/techp1">
-	
+
 	</iframe>
 </body>
 </html>
