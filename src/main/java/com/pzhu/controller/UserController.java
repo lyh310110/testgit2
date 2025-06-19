@@ -347,11 +347,6 @@ public class UserController{
 	}
 
 	// 显式处理 /login（http://localhost:8080/login）
-	// 显式处理 /login（http://localhost:8080/login）
-	// 显式处理 /login（http://localhost:8080/login）
-	// 显式处理 /login（http://localhost:8080/login）
-	// 显式处理 /login（http://localhost:8080/login）
-	// 显式处理 /login（http://localhost:8080/login）
 	@GetMapping("/login")
 	public String login() {
 		return "login";  // 同样返回 login.jsp
